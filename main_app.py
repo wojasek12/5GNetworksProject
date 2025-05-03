@@ -1,7 +1,10 @@
 import sys
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout
+    QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QComboBox
 )
+import constants
+from constants import bandwidth
+
 
 class ThroughputApp(QWidget):
     def __init__(self):
@@ -38,21 +41,45 @@ class ThroughputApp(QWidget):
         self.layout.addWidget(self.result_label)
 
     def initiate_data_field(self):
-        self.number_of_people_field = QLineEdit()
-        self.number_of_people_field.setPlaceholderText("Number of people")
-        self.layout.addWidget(self.number_of_people_field)
+        mode_label = QLabel("Mode:")
+        self.layout.addWidget(mode_label)
+        self.mode_field = QComboBox()
+        self.mode_field.addItems(constants.mode)
+        self.layout.addWidget(self.mode_field)
+        self.mode_field.setCurrentText("FDD")
 
-        self.area_field = QLineEdit()
-        self.area_field.setPlaceholderText("Area (in square meters)")
-        self.layout.addWidget(self.area_field)
 
-        self.bler_field = QLineEdit()
-        self.bler_field.setPlaceholderText("Bler area")
-        self.layout.addWidget(self.bler_field)
+        modulation_label = QLabel("Modulation:")
+        self.layout.addWidget(modulation_label)
+        self.modulation_field = QComboBox()
+        self.modulation_field.addItems(constants.modulation.keys())
+        self.layout.addWidget(self.modulation_field)
+        self.mode_field.setCurrentText("64QAM")
 
-        self.jakis_field = QLineEdit()
-        self.jakis_field.setPlaceholderText("Jakis area")
-        self.layout.addWidget(self.jakis_field)
+        coding_rate_label = QLabel("Coding Rate:")
+        self.layout.addWidget(coding_rate_label)
+        self.coding_rate_label = QLineEdit()
+        self.coding_rate_label.setPlaceholderText(f"{constants.coding_rate[self.modulation_field.currentText()][0]} - "
+                                           f"{constants.coding_rate[self.modulation_field.currentText()][1]}")
+        self.layout.addWidget(self.coding_rate_label)
+
+        bandwidth_label = QLabel("BW:")
+        self.layout.addWidget(bandwidth_label)
+        self.bandwidth_field = QComboBox()
+        self.bandwidth_field.addItems(constants.bandwidth.keys())
+        self.layout.addWidget(self.bandwidth_field)
+
+        antennas_label = QLabel("Antennas:")
+        self.layout.addWidget(antennas_label)
+        self.antennas_field = QComboBox()
+        self.antennas_field.addItems(constants.antennas.keys())
+        self.layout.addWidget(self.antennas_field)
+
+        overhead_label = QLabel("Overhead (in %):")
+        self.layout.addWidget(overhead_label)
+        self.overhead_field = QLineEdit()
+        self.overhead_field.setPlaceholderText("overhead in %")
+        self.layout.addWidget(self.overhead_field)
 
 
 if __name__ == "__main__":
