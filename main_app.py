@@ -45,9 +45,9 @@ class ThroughputApp(QWidget):
         self.layout.addWidget(mode_label)
         self.mode_field = QComboBox()
         self.mode_field.addItems(constants.mode)
+        self.mode_field.currentTextChanged.connect(self.on_mode_change)
         self.layout.addWidget(self.mode_field)
         self.mode_field.setCurrentText("FDD")
-
 
         modulation_label = QLabel("Modulation:")
         self.layout.addWidget(modulation_label)
@@ -81,6 +81,36 @@ class ThroughputApp(QWidget):
         self.overhead_field.setPlaceholderText("overhead in %")
         self.layout.addWidget(self.overhead_field)
 
+    # add new field for TDD Uplink/downlink configuration and special subframe
+    def on_mode_change(self, mode):
+        if mode == "TDD":
+            self.tdd_uplink_downlink_conf_label = QLabel("TDD uplink/downlink configuration: ")
+            insert_index = self.layout.count() - 2
+            self.layout.insertWidget(insert_index, self.tdd_uplink_downlink_conf_label)
+            self.tdd_downlink_conf_field = QComboBox()
+            self.tdd_downlink_conf_field.addItems(constants.tdd_uplink_downlink_conf.keys())
+            insert_index = self.layout.count() - 2
+            self.layout.insertWidget(insert_index, self.tdd_downlink_conf_field)
+
+            self.tdd_special_subframe_conf_label = QLabel("TDD special subframe configuration: ")
+            insert_index = self.layout.count() - 2
+            self.layout.insertWidget(insert_index, self.tdd_special_subframe_conf_label)
+            self.tdd_special_subframe_conf_field = QComboBox()
+            self.tdd_special_subframe_conf_field.addItems(constants.tdd_special_subframe_conf.keys())
+            insert_index = self.layout.count() - 2
+            self.layout.insertWidget(insert_index, self.tdd_special_subframe_conf_field)
+        else:
+            self.layout.removeWidget(self.tdd_uplink_downlink_conf_label)
+            self.tdd_uplink_downlink_conf_label.deleteLater()
+
+            self.layout.removeWidget(self.tdd_downlink_conf_field)
+            self.tdd_downlink_conf_field.deleteLater()
+
+            self.layout.removeWidget(self.tdd_special_subframe_conf_label)
+            self.tdd_special_subframe_conf_field.deleteLater()
+
+            self.layout.removeWidget(self.tdd_special_subframe_conf_field)
+            self.tdd_special_subframe_conf_field.deleteLater()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

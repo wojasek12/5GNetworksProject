@@ -25,3 +25,26 @@ antennas = {
     "SISO": 1,
     "2x2 MIMO": 2
 }
+
+tdd_uplink_downlink_conf = {
+    "DSUUUDSUUU": 0,
+    "DSUUDDSUUD": 1,
+    "DSUDDDSUDD": 2,
+    "DSUUUDDDDD": 3,
+    "DSUUDDDDDD": 4,
+    "DSUDDDDDDD": 5,
+    "DSUUUDSUUD": 6
+}
+
+tdd_special_subframe_conf = {
+    "3 DwPTS symbols, 1 UpPTS symbol": 0,
+    "9 DwPTS symbols, 1 UpPTS symbol": 1,
+    "10 DwPTS symbols, 1 UpPTS symbol": 2,
+    "11 DwPTS symbols, 1 UpPTS symbol": 3,
+    "12 DwPTS symbols, 1 UpPTS symbol": 4,
+    "3 DwPTS symbols, 2 UpPTS symbol": 5,
+    "9 DwPTS symbols, 2 UpPTS symbol": 6,
+    "10 DwPTS symbols, 2 UpPTS symbol": 7,
+    "11 DwPTS symbols, 2 UpPTS symbol": 8,
+    "6 DwPTS symbols, 2 UpPTS symbol": 9,
+}
