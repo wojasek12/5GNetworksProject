@@ -23,28 +23,29 @@ coding_rate = {
 
 antennas = {
     "SISO": 1,
-    "2x2 MIMO": 2
+    "2x2 MIMO": 2,
+    "4x4 MIMO": 4
 }
 
 tdd_uplink_downlink_conf = {
-    "DSUUUDSUUU": 0,
-    "DSUUDDSUUD": 1,
-    "DSUDDDSUDD": 2,
-    "DSUUUDDDDD": 3,
-    "DSUUDDDDDD": 4,
-    "DSUDDDDDDD": 5,
-    "DSUUUDSUUD": 6
+    "DSUUUDSUUU": {"downlink": 2, "uplink": 6, "special": 2},
+    "DSUUDDSUUD": {"downlink": 4, "uplink": 4, "special": 2},
+    "DSUDDDSUDD": {"downlink": 6, "uplink": 2, "special": 2},
+    "DSUUUDDDDD": {"downlink": 7, "uplink": 2, "special": 1},
+    "DSUUDDDDDD": {"downlink": 8, "uplink": 1, "special": 1},
+    "DSUDDDDDDD": {"downlink": 9, "uplink": 0, "special": 1},
+    "DSUUUDSUUD": {"downlink": 3, "uplink": 5, "special": 2},
 }
 
 tdd_special_subframe_conf = {
-    "3 DwPTS symbols, 1 UpPTS symbol": 0,
-    "9 DwPTS symbols, 1 UpPTS symbol": 1,
-    "10 DwPTS symbols, 1 UpPTS symbol": 2,
-    "11 DwPTS symbols, 1 UpPTS symbol": 3,
-    "12 DwPTS symbols, 1 UpPTS symbol": 4,
-    "3 DwPTS symbols, 2 UpPTS symbol": 5,
-    "9 DwPTS symbols, 2 UpPTS symbol": 6,
-    "10 DwPTS symbols, 2 UpPTS symbol": 7,
-    "11 DwPTS symbols, 2 UpPTS symbol": 8,
-    "6 DwPTS symbols, 2 UpPTS symbol": 9,
+    "3 DwPTS symbols, 1 UpPTS symbol": {"downlink": 3, "uplink": 1, "gp": 10},
+    "9 DwPTS symbols, 1 UpPTS symbol": {"downlink": 9, "uplink": 1, "gp": 4},
+    "10 DwPTS symbols, 1 UpPTS symbol": {"downlink": 10, "uplink": 1, "gp": 3},
+    "11 DwPTS symbols, 1 UpPTS symbol": {"downlink": 11, "uplink": 1, "gp": 2},
+    "12 DwPTS symbols, 1 UpPTS symbol": {"downlink": 12, "uplink": 1, "gp": 1},
+    "3 DwPTS symbols, 2 UpPTS symbol": {"downlink": 3, "uplink": 2, "gp": 9},
+    "9 DwPTS symbols, 2 UpPTS symbol": {"downlink": 9, "uplink": 2, "gp": 3},
+    "10 DwPTS symbols, 2 UpPTS symbol": {"downlink": 10, "uplink": 2, "gp": 2},
+    "11 DwPTS symbols, 2 UpPTS symbol": {"downlink": 11, "uplink": 2, "gp": 1},
+    "6 DwPTS symbols, 2 UpPTS symbol": {"downlink": 6, "uplink": 2, "gp": 6},
 }

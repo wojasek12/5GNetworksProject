@@ -1,4 +1,6 @@
 import sys
+
+from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QComboBox
 )
@@ -12,6 +14,7 @@ class ThroughputApp(QWidget):
         self.setWindowTitle("Throughput calculator")
         self.layout = QVBoxLayout()
         self.init_ui()
+        self.setFixedWidth(300)
 
     def init_ui(self):
         self.label = QLabel("Enter data to calculate the throughput:")
@@ -20,14 +23,31 @@ class ThroughputApp(QWidget):
         self.initiate_data_field()
         self.initiate_calculate_button()
         self.initiate_output_field()
-
+        self.mode_field.setCurrentText("TDD")
         self.setLayout(self.layout)
 
     def calculate_throughput(self):
         try:
-            throughput = (float(self.number_of_people_field.text()) * float(self.area_field.text()) -
-                          (float(self.bler_field.text()) / float(self.jakis_field.text())))
-            self.result_label.setText(f"Throughput: {throughput}")
+            base_throughput = (((constants.bandwidth[self.bandwidth_field.currentText()] * 12 * 14
+                          * constants.modulation[self.modulation_field.currentText()])
+                          * float(self.coding_rate_field.text())
+                          * constants.antennas[self.antennas_field.currentText()])
+                          * ((100 - float(self.overhead_field.text()))/100)) / 1000
+
+            downlink_throughput = base_throughput * (
+                (float(constants.tdd_uplink_downlink_conf[self.tdd_uplink_downlink_conf_field.currentText()]["downlink"])
+                + float(constants.tdd_uplink_downlink_conf[self.tdd_uplink_downlink_conf_field.currentText()]["special"])
+                * (float(constants.tdd_special_subframe_conf[self.tdd_special_subframe_conf_field.currentText()]["downlink"]) / 14)
+            )) / 10
+
+            uplink_throughput = base_throughput * (
+                (float(constants.tdd_uplink_downlink_conf[self.tdd_uplink_downlink_conf_field.currentText()]["uplink"])
+                + float(constants.tdd_uplink_downlink_conf[self.tdd_uplink_downlink_conf_field.currentText()]["special"])
+                * (float(constants.tdd_special_subframe_conf[self.tdd_special_subframe_conf_field.currentText()]["uplink"]) / 14)
+            )) / 10
+
+            self.result_label.setText(f"Downlink: {str(round(downlink_throughput, 2))} Mbps \n"
+                                      f"Uplink: {str(round(uplink_throughput, 2))} Mbps")
         except ValueError:
             self.result_label.setText("Please enter valid numbers.")
 
@@ -47,7 +67,7 @@ class ThroughputApp(QWidget):
         self.mode_field.addItems(constants.mode)
         self.mode_field.currentTextChanged.connect(self.on_mode_change)
         self.layout.addWidget(self.mode_field)
-        self.mode_field.setCurrentText("FDD")
+
 
         modulation_label = QLabel("Modulation:")
         self.layout.addWidget(modulation_label)
@@ -58,10 +78,10 @@ class ThroughputApp(QWidget):
 
         coding_rate_label = QLabel("Coding Rate:")
         self.layout.addWidget(coding_rate_label)
-        self.coding_rate_label = QLineEdit()
-        self.coding_rate_label.setPlaceholderText(f"{constants.coding_rate[self.modulation_field.currentText()][0]} - "
+        self.coding_rate_field = QLineEdit()
+        self.coding_rate_field.setPlaceholderText(f"{constants.coding_rate[self.modulation_field.currentText()][0]} - "
                                            f"{constants.coding_rate[self.modulation_field.currentText()][1]}")
-        self.layout.addWidget(self.coding_rate_label)
+        self.layout.addWidget(self.coding_rate_field)
 
         bandwidth_label = QLabel("BW:")
         self.layout.addWidget(bandwidth_label)
@@ -80,6 +100,7 @@ class ThroughputApp(QWidget):
         self.overhead_field = QLineEdit()
         self.overhead_field.setPlaceholderText("overhead in %")
         self.layout.addWidget(self.overhead_field)
+        self.mode_field.setCurrentText("0")
 
     # add new field for TDD Uplink/downlink configuration and special subframe
     def on_mode_change(self, mode):
@@ -87,10 +108,10 @@ class ThroughputApp(QWidget):
             self.tdd_uplink_downlink_conf_label = QLabel("TDD uplink/downlink configuration: ")
             insert_index = self.layout.count() - 2
             self.layout.insertWidget(insert_index, self.tdd_uplink_downlink_conf_label)
-            self.tdd_downlink_conf_field = QComboBox()
-            self.tdd_downlink_conf_field.addItems(constants.tdd_uplink_downlink_conf.keys())
+            self.tdd_uplink_downlink_conf_field = QComboBox()
+            self.tdd_uplink_downlink_conf_field.addItems(constants.tdd_uplink_downlink_conf.keys())
             insert_index = self.layout.count() - 2
-            self.layout.insertWidget(insert_index, self.tdd_downlink_conf_field)
+            self.layout.insertWidget(insert_index, self.tdd_uplink_downlink_conf_field)
 
             self.tdd_special_subframe_conf_label = QLabel("TDD special subframe configuration: ")
             insert_index = self.layout.count() - 2
@@ -103,11 +124,11 @@ class ThroughputApp(QWidget):
             self.layout.removeWidget(self.tdd_uplink_downlink_conf_label)
             self.tdd_uplink_downlink_conf_label.deleteLater()
 
-            self.layout.removeWidget(self.tdd_downlink_conf_field)
-            self.tdd_downlink_conf_field.deleteLater()
+            self.layout.removeWidget(self.tdd_uplink_downlink_conf_field)
+            self.tdd_uplink_downlink_conf_field.deleteLater()
 
             self.layout.removeWidget(self.tdd_special_subframe_conf_label)
-            self.tdd_special_subframe_conf_field.deleteLater()
+            self.tdd_special_subframe_conf_label.deleteLater()
 
             self.layout.removeWidget(self.tdd_special_subframe_conf_field)
             self.tdd_special_subframe_conf_field.deleteLater()
