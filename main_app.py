@@ -1,11 +1,9 @@
 import sys
 
-from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QComboBox
+    QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QComboBox
 )
 import constants
-from constants import bandwidth
 
 
 class ThroughputApp(QWidget):
@@ -19,7 +17,6 @@ class ThroughputApp(QWidget):
     def init_ui(self):
         self.label = QLabel("Enter data to calculate the throughput:")
         self.layout.addWidget(self.label)
-
         self.initiate_data_field()
         self.initiate_calculate_button()
         self.initiate_output_field()
@@ -28,28 +25,30 @@ class ThroughputApp(QWidget):
 
     def calculate_throughput(self):
         try:
-            base_throughput = (((constants.bandwidth[self.bandwidth_field.currentText()] * 12 * 14
-                          * constants.modulation[self.modulation_field.currentText()])
-                          * float(self.coding_rate_field.text())
-                          * constants.antennas[self.antennas_field.currentText()])
-                          * ((100 - float(self.overhead_field.text()))/100)) / 1000
-
-            downlink_throughput = base_throughput * (
-                (float(constants.tdd_uplink_downlink_conf[self.tdd_uplink_downlink_conf_field.currentText()]["downlink"])
-                + float(constants.tdd_uplink_downlink_conf[self.tdd_uplink_downlink_conf_field.currentText()]["special"])
-                * (float(constants.tdd_special_subframe_conf[self.tdd_special_subframe_conf_field.currentText()]["downlink"]) / 14)
-            )) / 10
-
-            uplink_throughput = base_throughput * (
-                (float(constants.tdd_uplink_downlink_conf[self.tdd_uplink_downlink_conf_field.currentText()]["uplink"])
-                + float(constants.tdd_uplink_downlink_conf[self.tdd_uplink_downlink_conf_field.currentText()]["special"])
-                * (float(constants.tdd_special_subframe_conf[self.tdd_special_subframe_conf_field.currentText()]["uplink"]) / 14)
-            )) / 10
+            base_throughput = self.calculate_base_throughput()
+            downlink_throughput = self.calculate_specific_throughput(base_throughput, "downlink")
+            uplink_throughput = self.calculate_specific_throughput(base_throughput, "uplink")
 
             self.result_label.setText(f"Downlink: {str(round(downlink_throughput, 2))} Mbps \n"
                                       f"Uplink: {str(round(uplink_throughput, 2))} Mbps")
         except ValueError:
             self.result_label.setText("Please enter valid numbers.")
+
+    def calculate_base_throughput(self):
+        base_throughput = (((constants.bandwidth[self.bandwidth_field.currentText()] * 12 * 14
+                             * constants.modulation[self.modulation_field.currentText()])
+                            * float(self.coding_rate_field.text())
+                            * constants.antennas[self.antennas_field.currentText()])
+                           * ((100 - float(self.overhead_field.text())) / 100)) / 1000
+        return base_throughput
+
+    def calculate_specific_throughput(self, base_throughput, specific_throughput_string):
+        specific_throughput = base_throughput * (
+                (float(constants.tdd_uplink_downlink_conf[self.tdd_uplink_downlink_conf_field.currentText()][specific_throughput_string])
+                + float(constants.tdd_uplink_downlink_conf[self.tdd_uplink_downlink_conf_field.currentText()]["special"])
+                * (float(constants.tdd_special_subframe_conf[self.tdd_special_subframe_conf_field.currentText()][specific_throughput_string]) / 14)
+            )) / 10
+        return specific_throughput
 
     def initiate_calculate_button(self):
         self.calc_tp_button = QPushButton("Calculate Throughput")
