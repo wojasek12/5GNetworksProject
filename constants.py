@@ -1,31 +1,19 @@
 mode = ["FDD", "TDD"]
 
-#modulation : number of bits per symbol
-modulation = {
-    "QPSK": 2,
-    "16QAM": 4,
-    "64QAM": 6
-}
+# modulation : number of bits per symbol
+modulation = {"QPSK": 2, "16-QAM": 4, "64-QAM": 6, "256-QAM": 6}
 bandwidth = {
     "1.4 MHz": 6,
     "3 MHz": 15,
     "5 MHz": 25,
     "10 MHz": 50,
     "15 MHz": 75,
-    "20 MHz": 100
+    "20 MHz": 100,
 }
 
-coding_rate = {
-    "QPSK": (0.076, 0.93),
-    "16QAM": (0.3, 0.89),
-    "64QAM": (0.45, 0.93)
-}
+# coding_rate = {"QPSK": (0.076, 0.93), "16QAM": (0.3, 0.89), "64QAM": (0.45, 0.93)}
 
-antennas = {
-    "SISO": 1,
-    "2x2 MIMO": 2,
-    "4x4 MIMO": 4
-}
+antennas = {"SISO": 1, "2x2 MIMO": 2, "4x4 MIMO": 4}
 
 tdd_uplink_downlink_conf = {
     "DSUUUDSUUU": {"downlink": 2, "uplink": 6, "special": 2},
@@ -48,4 +36,52 @@ tdd_special_subframe_conf = {
     "10 DwPTS symbols, 2 UpPTS symbol": {"downlink": 10, "uplink": 2, "gp": 2},
     "11 DwPTS symbols, 2 UpPTS symbol": {"downlink": 11, "uplink": 2, "gp": 1},
     "6 DwPTS symbols, 2 UpPTS symbol": {"downlink": 6, "uplink": 2, "gp": 6},
+}
+
+
+coding_rate = {
+    "0": 0.0762,
+    "1": 0.1172,
+    "2": 0.1885,
+    "3": 0.3008,
+    "4": 0.4385,
+    "5": 0.6016,
+    "6": 0.7402,
+    "7": 0.2422,
+    "8": 0.3164,
+    "9": 0.3818,
+    "10": 0.4805,
+    "11": 0.6016,
+    "12": 0.3047,
+    "13": 0.4014,
+    "14": 0.4551,
+    "15": 0.5508,
+    "16": 0.6465,
+    "17": 0.7539,
+    "18": 0.8184,
+    "28": 0.7500,
+}
+
+
+MCS = {
+    "0": [modulation["QPSK"], coding_rate["0"]],
+    "1": [modulation["QPSK"], coding_rate["1"]],
+    "2": [modulation["QPSK"], coding_rate["2"]],
+    "3": [modulation["QPSK"], coding_rate["3"]],
+    "4": [modulation["QPSK"], coding_rate["4"]],
+    "5": [modulation["QPSK"], coding_rate["5"]],
+    "6": [modulation["QPSK"], coding_rate["6"]],
+    "7": [modulation["16-QAM"], coding_rate["7"]],
+    "8": [modulation["16-QAM"], coding_rate["8"]],
+    "9": [modulation["16-QAM"], coding_rate["9"]],
+    "10": [modulation["16-QAM"], coding_rate["10"]],
+    "11": [modulation["16-QAM"], coding_rate["11"]],
+    "12": [modulation["64-QAM"], coding_rate["12"]],
+    "13": [modulation["64-QAM"], coding_rate["13"]],
+    "14": [modulation["64-QAM"], coding_rate["14"]],
+    "15": [modulation["64-QAM"], coding_rate["15"]],
+    "16": [modulation["64-QAM"], coding_rate["16"]],
+    "17": [modulation["64-QAM"], coding_rate["17"]],
+    "18": [modulation["64-QAM"], coding_rate["18"]],
+    "28": [modulation["256-QAM"], coding_rate["28"]],
 }
