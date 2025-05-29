@@ -1,7 +1,7 @@
 mode = ["FDD", "TDD"]
 
 # modulation : number of bits per symbol
-modulation = {"QPSK": 2, "16-QAM": 4, "64-QAM": 6, "256-QAM": 6}
+modulation = {"QPSK": 2, "16-QAM": 4, "64-QAM": 6, "256-QAM": 8}
 bandwidth = {
     "1.4 MHz": 6,
     "3 MHz": 15,
@@ -24,9 +24,9 @@ tdd_uplink_downlink_conf = {
     "DSUUUDSUUU": {"downlink": 2, "uplink": 6, "special": 2},
     "DSUUDDSUUD": {"downlink": 4, "uplink": 4, "special": 2},
     "DSUDDDSUDD": {"downlink": 6, "uplink": 2, "special": 2},
-    "DSUUUDDDDD": {"downlink": 7, "uplink": 2, "special": 1},
-    "DSUUDDDDDD": {"downlink": 8, "uplink": 1, "special": 1},
-    "DSUDDDDDDD": {"downlink": 9, "uplink": 0, "special": 1},
+    "DSUUUDDDDD": {"downlink": 6, "uplink": 3, "special": 1},
+    "DSUUDDDDDD": {"downlink": 7, "uplink": 2, "special": 1},
+    "DSUDDDDDDD": {"downlink": 9, "uplink": 1, "special": 1},
     "DSUUUDSUUD": {"downlink": 3, "uplink": 5, "special": 2},
 }
 

@@ -68,8 +68,8 @@ class ThroughputApp(QWidget):
                 )
                 # * float(self.coding_rate_field.text())
                 * constants.antennas[self.antennas_field.currentText()]
-            )
-            * ((1 - float(constants.OVERHEAD[self.mode_field.currentText()][self.antennas_field.currentText()])))/ 1000)
+            ) / 1000
+        )
         return base_throughput
 
     def calculate_specific_throughput(
@@ -100,7 +100,7 @@ class ThroughputApp(QWidget):
                 )
             )
             / 10
-        )
+        ) * ((1 - float(constants.OVERHEAD[self.mode_field.currentText()][self.antennas_field.currentText()])))
         return specific_throughput
 
     def initiate_calculate_button(self):
