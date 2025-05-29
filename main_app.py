@@ -8,6 +8,8 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QVBoxLayout,
     QComboBox,
+    QCheckBox,
+    QVBoxLayout,
 )
 import constants
 
@@ -29,6 +31,7 @@ class ThroughputApp(QWidget):
         self.initiate_output_field()
         self.mode_field.setCurrentText("TDD")
         self.setLayout(self.layout)
+        self.CP = 14
 
     def calculate_throughput(self):
         try:
@@ -58,7 +61,7 @@ class ThroughputApp(QWidget):
                 (
                     constants.bandwidth[self.bandwidth_field.currentText()]
                     * 12
-                    * 14
+                    * self.CP
                     # * constants.modulation[self.modulation_field.currentText()]
                     * constants.MCS[self.mcs_field.currentText()][0]
                     * constants.MCS[self.mcs_field.currentText()][1]
@@ -66,8 +69,7 @@ class ThroughputApp(QWidget):
                 # * float(self.coding_rate_field.text())
                 * constants.antennas[self.antennas_field.currentText()]
             )
-            * ((100 - float(self.overhead_field.text())) / 100)
-        ) / 1000
+            * ((1 - float(constants.OVERHEAD[self.mode_field.currentText()][self.antennas_field.currentText()])))/ 1000)
         return base_throughput
 
     def calculate_specific_throughput(
@@ -110,6 +112,13 @@ class ThroughputApp(QWidget):
         self.result_label = QLabel("Throughput: ")
         self.layout.addWidget(self.result_label)
 
+    def handle_switch_toggle(self, state):
+        print(state)
+        if state == 2:
+            self.CP = 12
+        else:
+            self.CP = 14
+
     def initiate_data_field(self):
         mode_label = QLabel("Mode:")
         self.layout.addWidget(mode_label)
@@ -150,13 +159,36 @@ class ThroughputApp(QWidget):
         self.antennas_field = QComboBox()
         self.antennas_field.addItems(constants.antennas.keys())
         self.layout.addWidget(self.antennas_field)
+        
+        self.switch = QCheckBox("Extended CyclicPrefix")  # Label optional
+        self.switch.setChecked(False)  # default state
+        
+        self.switch.setStyleSheet('''
+            QCheckBox::indicator {
+                width: 40px;
+                height: 20px;
+            }
+            QCheckBox::indicator:unchecked {
+                border-radius: 10px;
+                background-color: #c40808;
+            }
+            QCheckBox::indicator:checked {
+                border-radius: 10px;
+                background-color: #00cc66;
+            }
+        ''')
 
-        overhead_label = QLabel("Overhead (in %):")
-        self.layout.addWidget(overhead_label)
-        self.overhead_field = QLineEdit()
-        self.overhead_field.setPlaceholderText("overhead in %")
-        self.layout.addWidget(self.overhead_field)
-        self.mode_field.setCurrentText("0")
+        self.layout.addWidget(self.switch)
+
+        # Optionally connect to a method to handle toggle changes:
+        self.switch.stateChanged.connect(self.handle_switch_toggle)
+
+        # overhead_label = QLabel("Overhead (in %):")
+        # self.layout.addWidget(overhead_label)
+        # self.overhead_field = QLineEdit()
+        # self.overhead_field.setPlaceholderText("overhead in %")
+        # self.layout.addWidget(self.overhead_field)
+        # self.mode_field.setCurrentText("0")
 
     # add new field for TDD Uplink/downlink configuration and special subframe
     def on_mode_change(self, mode):

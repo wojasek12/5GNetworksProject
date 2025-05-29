@@ -13,7 +13,12 @@ bandwidth = {
 
 # coding_rate = {"QPSK": (0.076, 0.93), "16QAM": (0.3, 0.89), "64QAM": (0.45, 0.93)}
 
-antennas = {"SISO": 1, "2x2 MIMO": 2, "4x4 MIMO": 4}
+SISO = "SISO"
+MIMO_2x2 = "2x2 MIMO"
+MIMO_4x4 = "4x4 MIMO"
+MIMO_8x8 = "8x8 MIMO"
+
+antennas = {SISO: 1, MIMO_2x2: 2, MIMO_4x4: 4, MIMO_8x8: 8}
 
 tdd_uplink_downlink_conf = {
     "DSUUUDSUUU": {"downlink": 2, "uplink": 6, "special": 2},
@@ -84,4 +89,20 @@ MCS = {
     "17": [modulation["64-QAM"], coding_rate["17"]],
     "18": [modulation["64-QAM"], coding_rate["18"]],
     "28": [modulation["256-QAM"], coding_rate["28"]],
+}
+
+
+OVERHEAD = {
+    "FDD": {
+        SISO: 0.21, 
+        MIMO_2x2: 0.24, 
+        MIMO_4x4: 0.27,
+        MIMO_8x8: 0.31
+    },
+    "TDD": {
+        SISO: 0.21,             #random value tutaj
+        MIMO_2x2: 0.24, 
+        MIMO_4x4: 0.27,
+        MIMO_8x8: 0.31
+    }
 }
