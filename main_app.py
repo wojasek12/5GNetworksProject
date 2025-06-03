@@ -24,6 +24,7 @@ class ThroughputApp(QWidget):
 
     def init_ui(self):
         self.label = QLabel("Enter data to calculate" "\nthe throughput:")
+        self.CP = 14
         self.layout.addWidget(self.label)
         self.label.setAlignment(Qt.AlignCenter)
         self.initiate_data_field()
@@ -31,7 +32,7 @@ class ThroughputApp(QWidget):
         self.initiate_output_field()
         self.mode_field.setCurrentText("TDD")
         self.setLayout(self.layout)
-        self.CP = 14
+
 
     def calculate_throughput(self):
         try:
@@ -63,8 +64,8 @@ class ThroughputApp(QWidget):
                     * 12
                     * self.CP
                     # * constants.modulation[self.modulation_field.currentText()]
-                    * constants.MCS[self.mcs_field.currentText()][0]
-                    * constants.MCS[self.mcs_field.currentText()][1]
+                    * constants.MCS[self.mcs_field.currentText()]["modulation"]
+                    * constants.MCS[self.mcs_field.currentText()][self.CP]
                 )
                 # * float(self.coding_rate_field.text())
                 * constants.antennas[self.antennas_field.currentText()]
@@ -91,7 +92,7 @@ class ThroughputApp(QWidget):
                     )
                     * (
                         float(
-                            constants.tdd_special_subframe_conf[
+                            constants.tdd_special_subframe_conf[self.CP][
                                 self.tdd_special_subframe_conf_field.currentText()
                             ][specific_throughput_string]
                         )
@@ -116,8 +117,10 @@ class ThroughputApp(QWidget):
         print(state)
         if state == 2:
             self.CP = 12
+            self.on_cyclic_prefix_tdd_change(12)
         else:
             self.CP = 14
+            self.on_cyclic_prefix_tdd_change(14)
 
     def initiate_data_field(self):
         mode_label = QLabel("Mode:")
@@ -190,46 +193,54 @@ class ThroughputApp(QWidget):
         # self.layout.addWidget(self.overhead_field)
         # self.mode_field.setCurrentText("0")
 
+    def on_cyclic_prefix_tdd_change(self, cp_value):
+        if self.mode_field.currentText() == "TDD":
+            self.remove_tdd_uplink_downlink()
+            self.add_tdd_uplink_downlink()
+
     # add new field for TDD Uplink/downlink configuration and special subframe
     def on_mode_change(self, mode):
         if mode == "TDD":
-            self.tdd_uplink_downlink_conf_label = QLabel(
-                "TDD uplink/downlink configuration: "
-            )
-            insert_index = self.layout.count() - 2
-            self.layout.insertWidget(insert_index, self.tdd_uplink_downlink_conf_label)
-            self.tdd_uplink_downlink_conf_field = QComboBox()
-            self.tdd_uplink_downlink_conf_field.addItems(
-                constants.tdd_uplink_downlink_conf.keys()
-            )
-            insert_index = self.layout.count() - 2
-            self.layout.insertWidget(insert_index, self.tdd_uplink_downlink_conf_field)
-
-            self.tdd_special_subframe_conf_label = QLabel(
-                "TDD special subframe configuration: "
-            )
-            insert_index = self.layout.count() - 2
-            self.layout.insertWidget(insert_index, self.tdd_special_subframe_conf_label)
-            self.tdd_special_subframe_conf_field = QComboBox()
-            self.tdd_special_subframe_conf_field.addItems(
-                constants.tdd_special_subframe_conf.keys()
-            )
-            insert_index = self.layout.count() - 2
-            self.layout.insertWidget(insert_index, self.tdd_special_subframe_conf_field)
+            self.add_tdd_uplink_downlink()
         else:
-            self.layout.removeWidget(self.tdd_uplink_downlink_conf_label)
-            self.tdd_uplink_downlink_conf_label.deleteLater()
+            self.remove_tdd_uplink_downlink()
 
-            self.layout.removeWidget(self.tdd_uplink_downlink_conf_field)
-            self.tdd_uplink_downlink_conf_field.deleteLater()
+    def add_tdd_uplink_downlink(self):
+        self.tdd_uplink_downlink_conf_label = QLabel(
+            "TDD uplink/downlink configuration: "
+        )
+        insert_index = self.layout.count() - 2
+        self.layout.insertWidget(insert_index, self.tdd_uplink_downlink_conf_label)
+        self.tdd_uplink_downlink_conf_field = QComboBox()
+        self.tdd_uplink_downlink_conf_field.addItems(
+            constants.tdd_uplink_downlink_conf.keys()
+        )
+        insert_index = self.layout.count() - 2
+        self.layout.insertWidget(insert_index, self.tdd_uplink_downlink_conf_field)
 
-            self.layout.removeWidget(self.tdd_special_subframe_conf_label)
-            self.tdd_special_subframe_conf_label.deleteLater()
+        self.tdd_special_subframe_conf_label = QLabel(
+            "TDD special subframe configuration: "
+        )
+        insert_index = self.layout.count() - 2
+        self.layout.insertWidget(insert_index, self.tdd_special_subframe_conf_label)
+        self.tdd_special_subframe_conf_field = QComboBox()
+        self.tdd_special_subframe_conf_field.addItems(
+            constants.tdd_special_subframe_conf[self.CP].keys()
+        )
+        insert_index = self.layout.count() - 2
+        self.layout.insertWidget(insert_index, self.tdd_special_subframe_conf_field)
+    def remove_tdd_uplink_downlink(self):
+        self.layout.removeWidget(self.tdd_uplink_downlink_conf_label)
+        self.tdd_uplink_downlink_conf_label.deleteLater()
 
-            self.layout.removeWidget(self.tdd_special_subframe_conf_field)
-            self.tdd_special_subframe_conf_field.deleteLater()
+        self.layout.removeWidget(self.tdd_uplink_downlink_conf_field)
+        self.tdd_uplink_downlink_conf_field.deleteLater()
 
+        self.layout.removeWidget(self.tdd_special_subframe_conf_label)
+        self.tdd_special_subframe_conf_label.deleteLater()
 
+        self.layout.removeWidget(self.tdd_special_subframe_conf_field)
+        self.tdd_special_subframe_conf_field.deleteLater()
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = ThroughputApp()
