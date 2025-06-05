@@ -56,7 +56,26 @@ class ThroughputApp(QWidget):
         except ValueError:
             self.result_label.setText("Please enter valid numbers.")
 
+
+    def calculate_coding_rate(self):
+        RB = constants.bandwidth[self.bandwidth_field.currentText()]
+        Modulation = constants.MCS[self.mcs_field.currentText()]["modulation"]
+        TBS_index = constants.MCS[self.mcs_field.currentText()]["TBS_index"]
+        TBS = constants.TBS_Nprb[str(RB)][TBS_index]
+        print("MCS:", self.mcs_field.currentText())
+        print("RB:", RB)
+        print("Modulation:", Modulation)
+        print("TBS_index:", TBS_index)
+        print("TBS:", TBS)
+        if self.CP == 14:
+            coding_rate = TBS/(168*int(RB)*int(Modulation))
+        else:
+            coding_rate = TBS/(144*int(RB)*int(Modulation))
+        return coding_rate
+    
     def calculate_base_throughput(self):
+        coding_rate = self.calculate_coding_rate()
+        print("CODING RATE: ",coding_rate)
         base_throughput = (
             (
                 (
@@ -65,7 +84,8 @@ class ThroughputApp(QWidget):
                     * self.CP
                     # * constants.modulation[self.modulation_field.currentText()]
                     * constants.MCS[self.mcs_field.currentText()]["modulation"]
-                    * constants.MCS[self.mcs_field.currentText()][self.CP]
+                    # * constants.MCS[self.mcs_field.currentText()][self.CP]
+                    * coding_rate
                 )
                 # * float(self.coding_rate_field.text())
                 * constants.antennas[self.antennas_field.currentText()]
