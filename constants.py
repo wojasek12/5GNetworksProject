@@ -3,7 +3,7 @@ mode = ["FDD", "TDD"]
 # modulation : number of bits per symbol
 modulation = {"QPSK": 2, "16-QAM": 4, "64-QAM": 6, "256-QAM": 8}
 bandwidth = {
-    "1.4 MHz": 6,
+    "1.4 MHz": 7,
     "3 MHz": 15,
     "5 MHz": 25,
     "10 MHz": 50,
